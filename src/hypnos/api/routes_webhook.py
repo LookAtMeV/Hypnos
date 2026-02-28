@@ -18,7 +18,8 @@ def verify_webhook(
     Meta sends query params named hub.mode, hub.verify_token, hub.challenge.
     FastAPI does not convert dots to underscores, so Query aliases are required.
     """
-    if hub_mode == "subscribe" and hub_verify_token == settings.whatsapp_verify_token:
-        return PlainTextResponse(content=hub_challenge or "", status_code=status.HTTP_200_OK)
+    is_valid = hub_mode == "subscribe" and hub_verify_token == settings.whatsapp_verify_token
+    if is_valid and hub_challenge:
+        return PlainTextResponse(content=hub_challenge, status_code=status.HTTP_200_OK)
 
     return PlainTextResponse(content="forbidden", status_code=status.HTTP_403_FORBIDDEN)

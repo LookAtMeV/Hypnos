@@ -54,3 +54,16 @@ def test_verify_webhook_missing_params(monkeypatch) -> None:
 
     assert resp.status_code == 403
     assert resp.text == "forbidden"
+
+
+def test_verify_webhook_missing_challenge(monkeypatch) -> None:
+    monkeypatch.setattr("hypnos.config.settings.whatsapp_verify_token", "test-token")
+
+    client = make_client()
+    resp = client.get(
+        "/webhook",
+        params={"hub.mode": "subscribe", "hub.verify_token": "test-token"},
+    )
+
+    assert resp.status_code == 403
+    assert resp.text == "forbidden"
